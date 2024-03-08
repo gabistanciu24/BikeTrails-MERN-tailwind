@@ -48,7 +48,7 @@ const CTA = () => {
               necessitatibus in adipisci vel nisi debitis laboriosam officiis?
             </p>
           </div>
-          <div className="ol-span-12 hidden mb-[4.375rem] md:block md:order-first lg:col-span-6 lg:order-last">
+          <div className="col-span-12 hidden mb-[4.375rem] md:block md:order-first lg:col-span-6 lg:order-last">
             <div className="w-3/4 mx-auto relative">
               <div className="w-1/2 h-1/2 bg-[#FC5A5A] rounded-lg absolute top-[10%] -right-[8%]" />
               <div className="w-1/2 h-1/2 bg-white rounded-lg opacity-[.06] absolute -bottom-[10%] -left-[8%]" />
