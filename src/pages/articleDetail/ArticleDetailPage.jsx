@@ -72,7 +72,7 @@ const ArticleDetailPage = () => {
               rerum iure nam natus debitis ratione recusandae aliquam?
             </p>
           </div>
-          <CommentsContainer className="mt-10" />
+          <CommentsContainer className="mt-10" logginedUserId="a" />
         </article>
         <SuggestedPosts
           header="Ultimele trasee"

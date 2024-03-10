@@ -3,9 +3,10 @@ import CommentForm from "./CommentForm";
 import { getCommentsData } from "../../data/comments";
 import Comment from "./Comment";
 
-const CommentsContainer = ({ className }) => {
+const CommentsContainer = ({ className, logginedUserId }) => {
   const [comments, setComments] = useState([]);
   const mainComments = comments.filter((comment) => comment.parent === null);
+  const [affectedComment, setAffectedComment] = useState(null);
 
   console.log(comments);
 
@@ -42,7 +43,14 @@ const CommentsContainer = ({ className }) => {
       />
       <div className="space-y-4 mt-8">
         {mainComments.map((comment) => (
-          <Comment comment={comment} />
+          <Comment
+            key={comment._id}
+            comment={comment}
+            logginedUserId={logginedUserId}
+            affectedComment={affectedComment}
+            setAffectedComment={setAffectedComment}
+            addComment={addCommentHandler}
+          />
         ))}
       </div>
     </div>
