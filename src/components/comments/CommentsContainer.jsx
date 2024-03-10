@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import CommentForm from "./CommentForm";
 import { getCommentsData } from "../../data/comments";
+import Comment from "./Comment";
 
 const CommentsContainer = ({ className }) => {
   const [comments, setComments] = useState([]);
+  const mainComments = comments.filter((comment) => comment.parent === null);
 
   console.log(comments);
 
@@ -14,17 +16,17 @@ const CommentsContainer = ({ className }) => {
     })();
   }, []);
 
-  const addCommentHandler = (value, pasrent = null, replyOnUser = null) => {
+  const addCommentHandler = (value, parent = null, replyOnUser = null) => {
     const newComment = {
       _id: "12",
       user: {
         _id: "b",
         name: "Paul M. Williams",
       },
-      desc: "keep it up bro <3",
+      desc: value,
       post: "1",
-      parent: null,
-      replyOnUser: null,
+      parent: parent,
+      replyOnUser: replyOnUser,
       createdAt: "2022-12-31T17:22:05.092+0000",
     };
     setComments((curState) => {
@@ -38,6 +40,11 @@ const CommentsContainer = ({ className }) => {
         btnLabel="Trimite"
         formSubmitHandler={(value) => addCommentHandler(value)}
       />
+      <div className="space-y-4 mt-8">
+        {mainComments.map((comment) => (
+          <Comment comment={comment} />
+        ))}
+      </div>
     </div>
   );
 };
