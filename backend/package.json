@@ -14,6 +14,10 @@
     "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "express": "^4.18.3",
-    "mongoose": "^8.2.1"
+    "mongodb": "^6.4.0",
+    "mongoose": "^6.12.7"
+  },
+  "engines": {
+    "node": "16.x.x"
   }
 }
