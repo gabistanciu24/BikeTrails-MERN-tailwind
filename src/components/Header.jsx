@@ -119,7 +119,7 @@ const Header = () => {
                     className="flex gap-x-1 items-center mt-5 lg:mt-0 border-2 border-blue-500 px-6 py-2 rounded-full text-blue-500 font-semibold hover:bg-blue-500 hover:text-white transition-all duration-300"
                     onClick={() => setProfileDropdown(!profileDropdown)}
                   >
-                    <span>Profil</span>
+                    <span>Cont</span>
                     <MdKeyboardArrowDown />
                   </button>
                   <div
@@ -137,9 +137,10 @@ const Header = () => {
                       </button>
                       <button
                         type="buton"
+                        onClick={() => navigate("/profile")}
                         className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
                       >
-                        Dashboard
+                        Profil
                       </button>
                     </ul>
                   </div>
