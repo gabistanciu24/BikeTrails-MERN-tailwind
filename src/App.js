@@ -4,6 +4,7 @@ import HomePage from "./pages/home/HomePage.jsx";
 import ArticleDetailPage from "./pages/articleDetail/ArticleDetailPage.jsx";
 import RegisterPage from "./pages/register/RegisterPage.jsx";
 import { Toaster } from "react-hot-toast";
+import LoginPage from "./pages/login/LoginPage.jsx";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route index path="/" element={<HomePage />} />
         <Route path="/trail/:id" element={<ArticleDetailPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
       <Toaster />
     </div>

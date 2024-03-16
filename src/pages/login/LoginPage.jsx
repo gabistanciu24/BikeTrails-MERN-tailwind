@@ -3,19 +3,19 @@ import MainLayout from "../../components/MainLayout";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { signup } from "../../services/index/users";
+import { login } from "../../services/index/users";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../store/reducers/userReducers";
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: ({ name, email, password }) => {
-      return signup({ name, email, password });
+    mutationFn: ({ email, password }) => {
+      return login({ email, password });
     },
     onSuccess: (data) => {
       dispatch(userActions.setUserInfo(data));
@@ -37,62 +37,25 @@ const RegisterPage = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    watch,
   } = useForm({
     defaultValues: {
-      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
     mode: "onchange",
   });
   const submitHandler = (data) => {
-    const { name, email, password } = data;
-    mutate({ name, email, password });
+    const { email, password } = data;
+    mutate({ email, password });
   };
-  const password = watch("password");
-
   return (
     <MainLayout>
       <section className="container mx-auto px-5 py-10">
         <div className="w-full max-w-sm mx-auto">
           <h1 className="font-roboto text-2xl font-bold text-center text-dark-hard mb-8">
-            Inregistreaza-te
+            Conecteaza-te
           </h1>
           <form onSubmit={handleSubmit(submitHandler)}>
-            <div className="flex flex-col mb-6 w-full">
-              <label
-                htmlFor="name"
-                className="text-[#5a7184] font-semibold block"
-              >
-                Nume
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                {...register("name", {
-                  minLength: {
-                    value: 1,
-                    message: "Numele trebuie sa aiba cel putin un caracter",
-                  },
-                  required: {
-                    value: true,
-                    message: "Numele este obligatoriu",
-                  },
-                })}
-                placeholder="Introdu numele..."
-                className={`placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border ${
-                  errors.name ? "border-red-500" : "border-[#c3cad9]"
-                }`}
-              />
-              {errors.name?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.name?.message}
-                </p>
-              )}
-            </div>
             <div className="flex flex-col mb-6 w-full">
               <label
                 htmlFor="email"
@@ -156,48 +119,23 @@ const RegisterPage = () => {
                 </p>
               )}
             </div>
-            <div className="flex flex-col mb-6 w-full">
-              <label
-                htmlFor="confirmPassword"
-                className="text-[#5a7184] font-semibold block"
-              >
-                Confirmare parola
-              </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                id="confirmPassword"
-                {...register("confirmPassword", {
-                  required: {
-                    value: true,
-                    message: "Confirmarea parolei este obligatorie",
-                  },
-                  validate: (value) => {
-                    if (value !== password) {
-                      return "Parolele nu se potrivesc";
-                    }
-                  },
-                })}
-                placeholder="Confirma parola..."
-                className="placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-4 font-semibold block outline-none border border-[#c3cad9]"
-              />
-              {errors.confirmPassword?.message && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.confirmPassword?.message}
-                </p>
-              )}
-            </div>
+            <Link
+              to="/forget-password"
+              className="text-sm font-semibold text-primary"
+            >
+              Ai uitat parola?
+            </Link>
             <button
               type="submit"
               disabled={!isValid || isLoading}
-              className="w-full bg-primary text-white font-bold text-lg px-8 py-4 rounded-lg mb-6 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full bg-primary text-white font-bold text-lg px-8 py-4 rounded-lg my-6 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Inregistrare
+              Conectare
             </button>
             <p className="text-sm font-semibold text-[#5a7184]">
-              Deja membru?{" "}
-              <Link to="/login" className="text-primary">
-                Conecteaza-te!
+              Nu esti deja membru?{" "}
+              <Link to="/register" className="text-primary">
+                Inregistreaza-te!
               </Link>
             </p>
           </form>
@@ -207,4 +145,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
