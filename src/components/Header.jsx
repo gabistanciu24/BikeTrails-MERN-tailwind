@@ -5,14 +5,21 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/actions/user.js";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const navItemsInfo = [
-  { name: "Acasa", type: "link" },
-  { name: "Trasee", type: "link" },
-  { name: "Pagini", type: "dropdown", items: ["Despre noi", "Contact"] },
-  { name: "Preturi", type: "link" },
-  { name: "Faq", type: "link" },
+  { name: "Acasa", type: "link", href: "/" },
+  { name: "Trasee", type: "link", href: "/trasee" },
+  {
+    name: "Pagini",
+    type: "dropdown",
+    items: [
+      { title: "Despre noi", href: "/about" },
+      { title: "Contact", href: "/contact" },
+    ],
+  },
+  { name: "Preturi", type: "link", href: "/preturi" },
+  { name: "Faq", type: "link", href: "/faq" },
 ];
 
 const NavItem = ({ item }) => {
@@ -29,9 +36,9 @@ const NavItem = ({ item }) => {
       {item.type === "link" ? (
         <>
           {" "}
-          <a href="/" className="px-4 py-2">
+          <Link to={item.href} className="px-4 py-2">
             {item.name}
-          </a>
+          </Link>
           <span className="cursor-pointer text-blue-500 absolute transition-all duration-500 font-bold right-0 top-0 opacity-0 group-hover:right-[90%] group-hover:opacity-100">
             /
           </span>{" "}
@@ -52,13 +59,13 @@ const NavItem = ({ item }) => {
           >
             <ul className="bg-dark-soft lg:bg-transparent text-center flex flex-col shadow-lg rounded-lg overflow-hidden">
               {item.items.map((page, index) => (
-                <a
+                <Link
                   key={index}
-                  href="/"
+                  to={page.href}
                   className="hover:bg-dark-hard hover:text-white px-4 py-2 text-white lg:text-dark-soft"
                 >
-                  {page}
-                </a>
+                  {page.title}
+                </Link>
               ))}
             </ul>
           </div>
@@ -88,9 +95,9 @@ const Header = () => {
   return (
     <section className="sticky top-0 left-0 right-0 z-50 bg-white">
       <header className="container mx-auto px-5 flex justify-between py-4 items-center">
-        <div className="flex justify-center items-center">
+        <Link to={"/"} className="flex justify-center items-center">
           <img className="h-16" src={images.HeroLogo} alt="logo" />
-        </div>
+        </Link>
         <div className="lg:hidden z-50">
           {navIsVisible ? (
             <AiOutlineClose

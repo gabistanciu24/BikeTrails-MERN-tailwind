@@ -10,7 +10,7 @@ export const registerUser = async (req, res, next) => {
 
     if (user) {
       // return res.status(400).json({ message: "User have already registered" });
-      throw new Error("User have already registered");
+      throw new Error("Utilizator deja inregistrat!");
     }
 
     //creating a new user
@@ -40,7 +40,7 @@ export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     let user = await User.findOne({ email });
     if (!user) {
-      throw new Error("Email not found");
+      throw new Error("Emailul nu a fost gasit!");
     }
 
     if (await user.comparePassword(password)) {
@@ -54,7 +54,7 @@ export const loginUser = async (req, res, next) => {
         token: await user.generateJWT(),
       });
     } else {
-      throw new Error("Invalid email or password");
+      throw new Error("Parola sau email invalide!");
     }
   } catch (error) {
     next(error);
@@ -92,7 +92,9 @@ export const updateProfile = async (req, res, next) => {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
     if (req.body.password && req.body.password.length < 6) {
-      throw new Error("Password length must be at least 6 characters");
+      throw new Error(
+        "Parola trebuie sa fie formata din cel putin 6 caractere."
+      );
     } else if (req.body.password) {
       user.password = req.body.password;
     }
