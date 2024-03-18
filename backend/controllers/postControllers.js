@@ -1,4 +1,5 @@
 import { uploadPicture } from "../middleware/uploadPictureMiddleware";
+import Comment from "../models/Comment";
 import Post from "../models/Post";
 import { fileRemover } from "../utils/fileRemover";
 import { v4 as uuidv4 } from "uuid";
@@ -75,6 +76,24 @@ export const updatePost = async (req, res, next) => {
     });
   } catch (error) {
     // return res.status(500).json({ message: "Something went wrong!" });
+    next(error);
+  }
+};
+
+export const deletePost = async (req, res, next) => {
+  try {
+    const post = await Post.findOneAndDelete({
+      slug: req.params.slug,
+    });
+
+    if (!post) {
+      const error = new Error("Post not found");
+      return next(error);
+    }
+
+    await Comment.deleteMany({ post: post._id });
+    return res.json({ message: "Post is successfully deleted" });
+  } catch (error) {
     next(error);
   }
 };
