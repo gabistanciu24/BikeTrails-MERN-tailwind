@@ -63,10 +63,9 @@ const ArticleDetailPage = () => {
         { name: "Trail", link: "/trail" },
         { name: "Titlu traseu", link: `/trail/${data.slug}` },
       ]);
+      const content = data?.body?.content || [];
       setBody(
-        parse(
-          generateHTML(data?.body, [Bold, Italic, Text, Paragraph, Document])
-        )
+        parse(generateHTML(content, [Bold, Italic, Text, Paragraph, Document]))
       );
     },
   });
@@ -109,6 +108,7 @@ const ArticleDetailPage = () => {
               comments={data?.comments}
               className="mt-10"
               logginedUserId={userState?.userInfo?._id}
+              postSlug={slug}
             />
           </article>
           <div>
