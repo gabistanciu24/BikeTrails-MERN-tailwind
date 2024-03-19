@@ -17,6 +17,7 @@ import { generateHTML } from "@tiptap/react";
 import parse from "html-react-parser";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
+import { useSelector } from "react-redux";
 
 const postsData = [
   {
@@ -49,6 +50,7 @@ const tagsData = ["Enduro", "Singletrack", "Cross-country", "Downhill"];
 
 const ArticleDetailPage = () => {
   const { slug } = useParams();
+  const userState = useSelector((state) => state.user);
   const [breadCrumbsData, setbreadCrumbsData] = useState([]);
   const [body, setBody] = useState(null);
 
@@ -103,7 +105,11 @@ const ArticleDetailPage = () => {
               {data?.title}
             </h1>
             <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
-            <CommentsContainer className="mt-10" logginedUserId="a" />
+            <CommentsContainer
+              comments={data?.comments}
+              className="mt-10"
+              logginedUserId={userState?.userInfo?._id}
+            />
           </article>
           <div>
             <SuggestedPosts
