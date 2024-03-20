@@ -12,41 +12,12 @@ import SuggestedPosts from "./container/SuggestedPosts";
 import CommentsContainer from "../../components/comments/CommentsContainer";
 import SocialShareButtons from "../../components/SocialShareButtons";
 import { useQuery } from "@tanstack/react-query";
-import { getSinglePost } from "../../services/index/posts";
+import { getAllPosts, getSinglePost } from "../../services/index/posts";
 import { generateHTML } from "@tiptap/react";
 import parse from "html-react-parser";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
-
-const postsData = [
-  {
-    _id: "1",
-    image: images.Post1,
-    title: "Lorem ipsum dolor sit amet.",
-    createdAt: "2023-01-28T15:35:53.607+0000",
-  },
-  {
-    _id: "2",
-    image: images.Post1,
-    title: "Lorem ipsum dolor sit amet.",
-    createdAt: "2023-01-28T15:35:53.607+0000",
-  },
-  {
-    _id: "3",
-    image: images.Post1,
-    title: "Lorem ipsum dolor sit amet.",
-    createdAt: "2023-01-28T15:35:53.607+0000",
-  },
-  {
-    _id: "4",
-    image: images.Post1,
-    title: "Lorem ipsum dolor sit amet.",
-    createdAt: "2023-01-28T15:35:53.607+0000",
-  },
-];
-
-const tagsData = ["Enduro", "Singletrack", "Cross-country", "Downhill"];
 
 const ArticleDetailPage = () => {
   const { slug } = useParams();
@@ -68,6 +39,11 @@ const ArticleDetailPage = () => {
         parse(generateHTML(content, [Bold, Italic, Text, Paragraph, Document]))
       );
     },
+  });
+
+  const { postsData } = useQuery({
+    queryFn: () => getAllPosts(),
+    queryKey: ["posts"],
   });
 
   return (
@@ -115,7 +91,7 @@ const ArticleDetailPage = () => {
             <SuggestedPosts
               header="Ultimele trasee"
               posts={postsData}
-              tags={tagsData}
+              tags={data?.tags}
               className="mt-8 lg:mt-0 lg:max-w-xs"
             />
             <div className="mt-7">
@@ -123,10 +99,8 @@ const ArticleDetailPage = () => {
                 Distribuie pe:
               </h2>
               <SocialShareButtons
-                url={encodeURI(
-                  `https://www.linkedin.com/in/gabriel-stanciu-b66482268/`
-                )}
-                title={encodeURIComponent("Stanciu Gabriel LinkedIn")}
+                url={encodeURI(window.location.href)}
+                title={encodeURIComponent(data?.title)}
               />
             </div>
           </div>
