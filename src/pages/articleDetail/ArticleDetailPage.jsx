@@ -34,14 +34,15 @@ const ArticleDetailPage = () => {
         { name: "Trail", link: "/trail" },
         { name: "Titlu traseu", link: `/trail/${data.slug}` },
       ]);
-      const content = data?.body?.content || [];
       setBody(
-        parse(generateHTML(content, [Bold, Italic, Text, Paragraph, Document]))
+        parse(
+          generateHTML(data?.body, [Bold, Italic, Text, Paragraph, Document])
+        )
       );
     },
   });
 
-  const { postsData } = useQuery({
+  const { data: postsData } = useQuery({
     queryFn: () => getAllPosts(),
     queryKey: ["posts"],
   });
