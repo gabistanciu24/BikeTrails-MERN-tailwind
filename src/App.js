@@ -11,6 +11,7 @@ import Admin from "./pages/admin/screens/Admin.jsx";
 import Comments from "./pages/admin/screens/comments/Comments.jsx";
 import NewPost from "./pages/admin/screens/posts/NewPost.jsx";
 import ManagePosts from "./pages/admin/screens/posts/ManagePosts.jsx";
+import EditPost from "./pages/admin/screens/posts/EditPost.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="comments" element={<Comments />} />
           <Route path="posts/new" element={<NewPost />} />
           <Route path="posts/manage" element={<ManagePosts />} />
+          <Route path="posts/manage/edit/:slug" element={<EditPost />} />
         </Route>
       </Routes>
       <Toaster />

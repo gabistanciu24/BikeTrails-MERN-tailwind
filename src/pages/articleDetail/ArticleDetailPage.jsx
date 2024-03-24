@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import MainLayout from "../../components/MainLayout";
 import BreadCrumbs from "../../components/BreadCrumbs";
-import Bold from "@tiptap/extension-bold";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import Italic from "@tiptap/extension-italic";
 import { images, stables } from "../../constants";
 import { Link, useParams } from "react-router-dom";
 import SuggestedPosts from "./container/SuggestedPosts";
@@ -13,11 +8,10 @@ import CommentsContainer from "../../components/comments/CommentsContainer";
 import SocialShareButtons from "../../components/SocialShareButtons";
 import { useQuery } from "@tanstack/react-query";
 import { getAllPosts, getSinglePost } from "../../services/index/posts";
-import { generateHTML } from "@tiptap/react";
-import parse from "html-react-parser";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
+import { parseJsonToHtml } from "../../utils/parseJsonToHtml";
 
 const ArticleDetailPage = () => {
   const { slug } = useParams();
@@ -34,11 +28,7 @@ const ArticleDetailPage = () => {
         { name: "Trail", link: "/trail" },
         { name: "Titlu traseu", link: `/trail/${data.slug}` },
       ]);
-      setBody(
-        parse(
-          generateHTML(data?.body, [Bold, Italic, Text, Paragraph, Document])
-        )
-      );
+      setBody(parseJsonToHtml(data?.body));
     },
   });
 
