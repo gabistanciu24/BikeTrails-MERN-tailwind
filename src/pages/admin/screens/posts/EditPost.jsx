@@ -9,14 +9,15 @@ import { stables } from "../../../../constants";
 import { HiOutlineCamera } from "react-icons/hi";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Editor from "../../../../components/editor/Editor";
 
 const EditPost = () => {
+  const [body, setBody] = useState(null);
   const { slug } = useParams();
   const userState = useSelector((state) => state.user);
   const queryClient = useQueryClient();
   const [initialPhoto, setInitialPhoto] = useState(null);
   const [photo, setphoto] = useState(null);
-  const [body, setBody] = useState(null);
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
     queryKey: ["trail", slug],
@@ -46,7 +47,6 @@ const EditPost = () => {
   useEffect(() => {
     if (!isLoading && !isError) {
       setInitialPhoto(data?.photo);
-      setBody(parseJsonToHtml(data?.body));
     }
   }, [data, isError, isLoading]);
 
@@ -73,7 +73,7 @@ const EditPost = () => {
       updatedData.append("postPicture", picture);
     }
 
-    updatedData.append("document", JSON.stringify({}));
+    updatedData.append("document", JSON.stringify({ body }));
 
     mutateUpdatePostDetail({
       updatedData,
@@ -145,7 +145,17 @@ const EditPost = () => {
             <h1 className="text-xl font-medium font-roboto mt-4 text-dark-hard md:text-[1.625rem]">
               {data?.title}
             </h1>
-            <div className="mt-4 prose prose-sm sm:prose-base">{body}</div>
+            <div className="w-full">
+              {!isLoading && !isError && (
+                <Editor
+                  content={data?.body}
+                  editable={true}
+                  onDataChange={(data) => {
+                    setBody(data);
+                  }}
+                />
+              )}
+            </div>
             <button
               disabled={isLoadingUpdatePostDetail}
               type="button"
