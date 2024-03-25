@@ -9,6 +9,8 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import Heading from "@tiptap/extension-heading";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Image from "@tiptap/extension-image";
 
 lowlight.registerLanguage("html", html);
 lowlight.registerLanguage("css", css);
@@ -34,4 +36,6 @@ export const extensions = [
   Heading.configure({
     levels: [1, 2, 3],
   }),
+  Dropcursor,
+  Image,
 ];
