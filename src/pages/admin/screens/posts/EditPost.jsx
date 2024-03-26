@@ -9,6 +9,17 @@ import { HiOutlineCamera } from "react-icons/hi";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import Editor from "../../../../components/editor/Editor";
+import MultiSelectTagDropdown from "../../components/select-dropdown/MultiSelectTagDropdown";
+import { getAllCategories } from "../../../../services/index/postCategories";
+import {
+  categoryToOption,
+  filterCategories,
+} from "../../../../utils/multiSelectTagUtils";
+
+const promiseOptions = async (inputValue) => {
+  const categoriesData = await getAllCategories();
+  return filterCategories(inputValue, categoriesData);
+};
 
 const EditPost = () => {
   const [body, setBody] = useState(null);
@@ -17,6 +28,8 @@ const EditPost = () => {
   const queryClient = useQueryClient();
   const [initialPhoto, setInitialPhoto] = useState(null);
   const [photo, setphoto] = useState(null);
+  const [categories, setCategories] = useState(null);
+
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
     queryKey: ["trail", slug],
@@ -46,6 +59,7 @@ const EditPost = () => {
   useEffect(() => {
     if (!isLoading && !isError) {
       setInitialPhoto(data?.photo);
+      setCategories(data.categories.map((item) => item.value));
     }
   }, [data, isError, isLoading]);
 
@@ -72,7 +86,7 @@ const EditPost = () => {
       updatedData.append("postPicture", picture);
     }
 
-    updatedData.append("document", JSON.stringify({ body }));
+    updatedData.append("document", JSON.stringify({ body, categories }));
 
     mutateUpdatePostDetail({
       updatedData,
@@ -87,6 +101,8 @@ const EditPost = () => {
       setphoto(null);
     }
   };
+
+  let isPostDataLoaded = !isLoading && !isError;
 
   return (
     <div>
@@ -144,8 +160,19 @@ const EditPost = () => {
             <h1 className="text-xl font-medium font-roboto mt-4 text-dark-hard md:text-[1.625rem]">
               {data?.title}
             </h1>
+            <div className="my-5">
+              {isPostDataLoaded && (
+                <MultiSelectTagDropdown
+                  loadOptions={promiseOptions}
+                  onChange={(newValue) =>
+                    setCategories(newValue.map((item) => item.value))
+                  }
+                  defaultValue={data.categories.map(categoryToOption)}
+                />
+              )}
+            </div>
             <div className="w-full">
-              {!isLoading && !isError && (
+              {isPostDataLoaded && (
                 <Editor
                   content={data?.body}
                   editable={true}
