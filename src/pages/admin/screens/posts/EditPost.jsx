@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { getSinglePost, updatePost } from "../../../../services/index/posts";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import ArticleDetailSkeleton from "../../../articleDetail/components/ArticleDetailSkeleton";
 import ErrorMessage from "../../../../components/ErrorMessage";
 import { stables } from "../../../../constants";
@@ -15,6 +15,7 @@ import {
   categoryToOption,
   filterCategories,
 } from "../../../../utils/multiSelectTagUtils";
+import CreatableSelect from "react-select/creatable";
 
 const promiseOptions = async (inputValue) => {
   const categoriesData = await getAllCategories();
@@ -26,13 +27,25 @@ const EditPost = () => {
   const { slug } = useParams();
   const userState = useSelector((state) => state.user);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [initialPhoto, setInitialPhoto] = useState(null);
   const [photo, setphoto] = useState(null);
   const [categories, setCategories] = useState(null);
+  const [title, setTitle] = useState("");
+  const [tags, setTags] = useState(null);
+  const [postSlug, setPostSlug] = useState(slug);
+  const [caption, setCaption] = useState("");
 
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
     queryKey: ["trail", slug],
+    onSuccess: (data) => {
+      setInitialPhoto(data?.photo);
+      setCategories(data.categories.map((item) => item._id));
+      setTitle(data.title);
+      setTags(data.tags);
+    },
+    refetchOnWindowFocus: false,
   });
 
   const {
@@ -49,19 +62,13 @@ const EditPost = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries(["trail", slug]);
       toast.success("Trail is updated");
+      navigate(`/admin/posts/manage/edit/${data.slug}`, { replace: true });
     },
     onError: (error) => {
       toast.error(error.message);
       console.log(error);
     },
   });
-
-  useEffect(() => {
-    if (!isLoading && !isError) {
-      setInitialPhoto(data?.photo);
-      setCategories(data.categories.map((item) => item.value));
-    }
-  }, [data, isError, isLoading]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -86,7 +93,10 @@ const EditPost = () => {
       updatedData.append("postPicture", picture);
     }
 
-    updatedData.append("document", JSON.stringify({ body, categories }));
+    updatedData.append(
+      "document",
+      JSON.stringify({ body, categories, title, tags, slug: postSlug, caption })
+    );
 
     mutateUpdatePostDetail({
       updatedData,
@@ -142,7 +152,7 @@ const EditPost = () => {
             <button
               type="button"
               onClick={handleDeleteImage}
-              className="w-fit bg-red-500 text-sm text-white font-semibold rounded-lg px-2 py-1"
+              className="w-fit bg-red-500 text-sm text-white font-semibold rounded-lg px-2 py-1 mt-4"
             >
               Delete Image
             </button>
@@ -157,10 +167,50 @@ const EditPost = () => {
                 </Link>
               ))}
             </div>
-            <h1 className="text-xl font-medium font-roboto mt-4 text-dark-hard md:text-[1.625rem]">
-              {data?.title}
-            </h1>
-            <div className="my-5">
+            <div className="d-form-control w-full">
+              <label className="d-label" htmlFor="title">
+                <span className="d-label-text">Title</span>
+              </label>
+              <input
+                id="title"
+                value={title}
+                className="d-input d-input-bordered border-slate-300 !outline-slate-300 text-xl font-medium font-roboto text-dark-hard"
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="title"
+              />
+            </div>
+            <div className="d-form-control w-full">
+              <label className="d-label" htmlFor="caption">
+                <span className="d-label-text">Caption</span>
+              </label>
+              <input
+                id="caption"
+                value={caption}
+                className="d-input d-input-bordered border-slate-300 !outline-slate-300 text-xl font-medium font-roboto text-dark-hard"
+                onChange={(e) => setCaption(e.target.value)}
+                placeholder="caption"
+              />
+            </div>
+            <div className="d-form-control w-full">
+              <label className="d-label" htmlFor="slug">
+                <span className="d-label-text">Link</span>
+              </label>
+              <input
+                id="slug"
+                value={postSlug}
+                className="d-input d-input-bordered border-slate-300 !outline-slate-300 text-xl font-medium font-roboto text-dark-hard"
+                onChange={(e) =>
+                  setPostSlug(
+                    e.target.value.replace(/\s+/g, "-").toLocaleLowerCase()
+                  )
+                }
+                placeholder="Link"
+              />
+            </div>
+            <div className="mb-5 mt-2">
+              <label className="d-label">
+                <span className="d-label-text">Categories</span>
+              </label>
               {isPostDataLoaded && (
                 <MultiSelectTagDropdown
                   loadOptions={promiseOptions}
@@ -168,6 +218,24 @@ const EditPost = () => {
                     setCategories(newValue.map((item) => item.value))
                   }
                   defaultValue={data.categories.map(categoryToOption)}
+                />
+              )}
+            </div>
+            <div className="mb-5 mt-2">
+              <label className="d-label">
+                <span className="d-label-text">Tags</span>
+              </label>
+              {isPostDataLoaded && (
+                <CreatableSelect
+                  onChange={(newValue) =>
+                    setTags(newValue.map((item) => item.value))
+                  }
+                  defaultValue={data.tags.map((tag) => ({
+                    value: tag,
+                    label: tag,
+                  }))}
+                  isMulti
+                  className="relative z-20"
                 />
               )}
             </div>
