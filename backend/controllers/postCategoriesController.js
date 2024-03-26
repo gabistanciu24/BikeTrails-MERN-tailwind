@@ -1,18 +1,21 @@
-import Post from "../models/Post";
 import PostCategories from "../models/PostCategories";
+import Post from "../models/Post";
 
-export const createPostCategory = async (req, res, next) => {
+const createPostCategory = async (req, res, next) => {
   try {
     const { title } = req.body;
 
     const postCategory = await PostCategories.findOne({ title });
+
     if (postCategory) {
-      const error = new Error("Category already created");
+      const error = new Error("Category is already created!");
       return next(error);
     }
+
     const newPostCategory = new PostCategories({
       title,
     });
+
     const savedPostCategory = await newPostCategory.save();
 
     return res.status(201).json(savedPostCategory);
@@ -21,47 +24,63 @@ export const createPostCategory = async (req, res, next) => {
   }
 };
 
-export const getAllPostCategories = async (req, res, next) => {
+const getAllPostCategories = async (req, res, next) => {
   try {
     const postCategories = await PostCategories.find({});
+
     return res.json(postCategories);
   } catch (error) {
     next(error);
   }
 };
 
-export const updatePostCategory = async (req, res, next) => {
+const updatePostCategory = async (req, res, next) => {
   try {
     const { title } = req.body;
+
     const postCategory = await PostCategories.findByIdAndUpdate(
       req.params.postCategoryId,
       {
         title,
       },
-      { new: true }
+      {
+        new: true,
+      }
     );
+
     if (!postCategory) {
-      const error = new Error("Category not found");
+      const error = new Error("Category was not found");
       return next(error);
     }
+
     return res.json(postCategory);
   } catch (error) {
     next(error);
   }
 };
 
-export const deletePostCategory = async (req, res, next) => {
+const deletePostCategory = async (req, res, next) => {
   try {
-    const categoryId = req.params.postCategoyId;
+    const categoryId = req.params.postCategoryId;
+
     await Post.updateMany(
       { categories: { $in: [categoryId] } },
       { $pull: { categories: categoryId } }
     );
+
     await PostCategories.deleteOne({ _id: categoryId });
+
     res.send({
       message: "Trail category is successfully deleted!",
     });
   } catch (error) {
     next(error);
   }
+};
+
+export {
+  createPostCategory,
+  getAllPostCategories,
+  updatePostCategory,
+  deletePostCategory,
 };
