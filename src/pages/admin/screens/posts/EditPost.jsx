@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import CreatableSelect from "react-select/creatable";
 import { getSinglePost, updatePost } from "../../../../services/index/posts";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import ArticleDetailSkeleton from "../../../articleDetail/components/ArticleDetailSkeleton";
 import ErrorMessage from "../../../../components/ErrorMessage";
 import { stables } from "../../../../constants";
 import { HiOutlineCamera } from "react-icons/hi";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import Editor from "../../../../components/editor/Editor";
 import MultiSelectTagDropdown from "../../components/select-dropdown/MultiSelectTagDropdown";
@@ -15,7 +16,6 @@ import {
   categoryToOption,
   filterCategories,
 } from "../../../../utils/multiSelectTagUtils";
-import CreatableSelect from "react-select/creatable";
 
 const promiseOptions = async (inputValue) => {
   const { data: categoriesData } = await getAllCategories();
@@ -23,13 +23,13 @@ const promiseOptions = async (inputValue) => {
 };
 
 const EditPost = () => {
-  const [body, setBody] = useState(null);
   const { slug } = useParams();
-  const userState = useSelector((state) => state.user);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
   const [initialPhoto, setInitialPhoto] = useState(null);
-  const [photo, setphoto] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [body, setBody] = useState(null);
   const [categories, setCategories] = useState(null);
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState(null);
@@ -38,7 +38,7 @@ const EditPost = () => {
 
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
-    queryKey: ["trail", slug],
+    queryKey: ["blog", slug],
     onSuccess: (data) => {
       setInitialPhoto(data?.photo);
       setCategories(data.categories.map((item) => item._id));
@@ -60,8 +60,8 @@ const EditPost = () => {
       });
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["trail", slug]);
-      toast.success("Trail is updated");
+      queryClient.invalidateQueries(["blog", slug]);
+      toast.success("Post is updated");
       navigate(`/admin/posts/manage/edit/${data.slug}`, { replace: true });
     },
     onError: (error) => {
@@ -72,7 +72,7 @@ const EditPost = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setphoto(file);
+    setPhoto(file);
   };
 
   const handleUpdatePost = async () => {
@@ -82,14 +82,15 @@ const EditPost = () => {
       updatedData.append("postPicture", photo);
     } else if (initialPhoto && !photo) {
       const urlToObject = async (url) => {
-        let response = await fetch(url);
-        let blob = await response.blob();
+        let reponse = await fetch(url);
+        let blob = await reponse.blob();
         const file = new File([blob], initialPhoto, { type: blob.type });
         return file;
       };
       const picture = await urlToObject(
         stables.UPLOAD_FOLDER_BASE_URL + data?.photo
       );
+
       updatedData.append("postPicture", picture);
     }
 
@@ -106,9 +107,9 @@ const EditPost = () => {
   };
 
   const handleDeleteImage = () => {
-    if (window.confirm("Do you want to delete this Trail picture?")) {
+    if (window.confirm("Do you want to delete your Post picture?")) {
       setInitialPhoto(null);
-      setphoto(null);
+      setPhoto(null);
     }
   };
 
@@ -116,11 +117,10 @@ const EditPost = () => {
 
   return (
     <div>
-      {" "}
       {isLoading ? (
         <ArticleDetailSkeleton />
       ) : isError ? (
-        <ErrorMessage message="Couldn't fetch the post detail." />
+        <ErrorMessage message="Couldn't fetch the post detail" />
       ) : (
         <section className="container mx-auto max-w-5xl flex flex-col px-5 py-5 lg:flex-row lg:gap-x-5 lg:items-start">
           <article className="flex-1">
@@ -152,15 +152,14 @@ const EditPost = () => {
             <button
               type="button"
               onClick={handleDeleteImage}
-              className="w-fit bg-red-500 text-sm text-white font-semibold rounded-lg px-2 py-1 mt-4"
+              className="w-fit bg-red-500 text-sm text-white font-semibold rounded-lg px-2 py-1 mt-5"
             >
               Delete Image
             </button>
             <div className="mt-4 flex gap-2">
-              {" "}
               {data?.categories.map((category) => (
                 <Link
-                  to={`/trail?category=${category.name}`}
+                  to={`/blog?category=${category.name}`}
                   className="text-primary text-sm font-roboto inline-block md:text-base"
                 >
                   {category.name}
@@ -181,7 +180,7 @@ const EditPost = () => {
             </div>
             <div className="d-form-control w-full">
               <label className="d-label" htmlFor="caption">
-                <span className="d-label-text">Caption</span>
+                <span className="d-label-text">caption</span>
               </label>
               <input
                 id="caption"
@@ -193,48 +192,46 @@ const EditPost = () => {
             </div>
             <div className="d-form-control w-full">
               <label className="d-label" htmlFor="slug">
-                <span className="d-label-text">Link</span>
+                <span className="d-label-text">slug</span>
               </label>
               <input
                 id="slug"
                 value={postSlug}
                 className="d-input d-input-bordered border-slate-300 !outline-slate-300 text-xl font-medium font-roboto text-dark-hard"
                 onChange={(e) =>
-                  setPostSlug(
-                    e.target.value.replace(/\s+/g, "-").toLocaleLowerCase()
-                  )
+                  setPostSlug(e.target.value.replace(/\s+/g, "-").toLowerCase())
                 }
-                placeholder="Link"
+                placeholder="post slug"
               />
             </div>
             <div className="mb-5 mt-2">
               <label className="d-label">
-                <span className="d-label-text">Categories</span>
+                <span className="d-label-text">categories</span>
               </label>
               {isPostDataLoaded && (
                 <MultiSelectTagDropdown
                   loadOptions={promiseOptions}
+                  defaultValue={data.categories.map(categoryToOption)}
                   onChange={(newValue) =>
                     setCategories(newValue.map((item) => item.value))
                   }
-                  defaultValue={data.categories.map(categoryToOption)}
                 />
               )}
             </div>
             <div className="mb-5 mt-2">
               <label className="d-label">
-                <span className="d-label-text">Tags</span>
+                <span className="d-label-text">tags</span>
               </label>
               {isPostDataLoaded && (
                 <CreatableSelect
-                  onChange={(newValue) =>
-                    setTags(newValue.map((item) => item.value))
-                  }
                   defaultValue={data.tags.map((tag) => ({
                     value: tag,
                     label: tag,
                   }))}
                   isMulti
+                  onChange={(newValue) =>
+                    setTags(newValue.map((item) => item.value))
+                  }
                   className="relative z-20"
                 />
               )}
@@ -256,7 +253,7 @@ const EditPost = () => {
               onClick={handleUpdatePost}
               className="w-full bg-green-500 text-white font-semibold rounded-lg px-4 py-2 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Update Trail
+              Update Post
             </button>
           </article>
         </section>
