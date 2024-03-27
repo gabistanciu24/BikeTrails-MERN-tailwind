@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { images } from "../../../../constants";
 import { AiFillDashboard, AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-import { FaComments } from "react-icons/fa6";
+import { FaComments, FaUser } from "react-icons/fa6";
 import { MdDashboard } from "react-icons/md";
 import NavItem from "./NavItem";
 import NavItemCollapse from "./NavItemCollapse";
@@ -121,6 +121,14 @@ const Header = () => {
                 </button>
                 <Link to="/admin/categories/manage">Categories</Link>
               </NavItemCollapse>
+              <NavItem
+                title="Users"
+                link="/admin/users/manage"
+                icon={<FaUser className="text-xl" />}
+                name="users"
+                activeNavName={activeNavName}
+                setActiveNavName={setActiveNavName}
+              />
             </div>
           </div>
         </div>
