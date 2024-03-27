@@ -119,6 +119,7 @@ const Header = () => {
                 >
                   Add New Trail
                 </button>
+                <Link to="/admin/categories/manage">Categories</Link>
               </NavItemCollapse>
             </div>
           </div>
