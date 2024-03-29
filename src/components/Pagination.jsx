@@ -2,10 +2,10 @@ import React from "react";
 import { usePagination, DOTS } from "../hooks/usePagination";
 
 const Pagination = ({
+  onPageChange,
   currentPage,
   siblingCount = 1,
   totalPageCount,
-  onPageChange,
 }) => {
   const paginationRange = usePagination({
     currentPage,
@@ -20,7 +20,6 @@ const Pagination = ({
   const onNext = () => {
     onPageChange(currentPage + 1);
   };
-
   const onPrevious = () => {
     onPageChange(currentPage - 1);
   };
@@ -55,13 +54,15 @@ const Pagination = ({
               </button>
             );
           }
+
           return (
             <button
+              key={pageNumber}
               type="button"
               className={`w-full px-4 py-2 text-base border ${
                 pageNumber === currentPage
                   ? "text-white bg-blue-500"
-                  : "text-gray-500 bg-white hover:bg-gray-100"
+                  : "text-gray-600 bg-white hover:bg-gray-100"
               }`}
               onClick={() => onPageChange(pageNumber)}
             >
@@ -73,7 +74,7 @@ const Pagination = ({
         <button
           disabled={currentPage === lastPage}
           type="button"
-          className="w-full p-4 text-base text-gray-600 bg-white border-t border-b border-r rounded-r-xl hover:bg-gray-100  disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full p-4 text-base text-gray-600 bg-white border-t border-b border-r rounded-r-xl hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
           onClick={onNext}
         >
           <svg

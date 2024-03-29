@@ -1,10 +1,9 @@
-import React from "react";
 import Pagination from "../../../components/Pagination";
 
 const DataTable = ({
   pageTitle,
   dataListName,
-  searchKeyWordOnSubmitHandler,
+  searchKeywordOnSubmitHandler,
   searchInputPlaceHolder,
   searchKeywordOnChangeHandler,
   searchKeyword,
@@ -20,13 +19,14 @@ const DataTable = ({
   return (
     <div>
       <h1 className="text-2xl font-semibold">{pageTitle}</h1>
-      <div className="w-full px-4 mx-auto ">
+
+      <div className="w-full px-4 mx-auto">
         <div className="py-8">
           <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
             <h2 className="text-2xl leading-tight">{dataListName}</h2>
             <div className="text-end">
               <form
-                onSubmit={searchKeyWordOnSubmitHandler}
+                onSubmit={searchKeywordOnSubmitHandler}
                 className="flex flex-col justify-center w-3/4 max-w-sm space-y-3 md:flex-row md:w-full md:space-x-3 md:space-y-0"
               >
                 <div className=" relative ">

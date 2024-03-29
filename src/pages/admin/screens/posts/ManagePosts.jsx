@@ -38,9 +38,10 @@ const ManagePosts = () => {
       tableHeaderTitleList={["Title", "Category", "Created At", "Tags", ""]}
       isLoading={isLoading}
       data={postsData?.data}
-      currentPage={currentPage}
       headers={postsData?.headers}
       userState={userState}
+      currentPage={currentPage}
+      setCurrentPage={setCurrentPage}
     >
       {postsData?.data.map((post) => (
         <tr>

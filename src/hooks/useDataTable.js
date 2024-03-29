@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 let isFirstRun = true;
 
@@ -15,6 +15,7 @@ export const useDataTable = ({
   const userState = useSelector((state) => state.user);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryFn: dataQueryFn,
     queryKey: [dataQueryKey],
@@ -24,7 +25,7 @@ export const useDataTable = ({
     useMutation({
       mutationFn: mutateDeleteFn,
       onSuccess: (data) => {
-        queryClient.invalidateQueries(dataQueryKey);
+        queryClient.invalidateQueries([dataQueryKey]);
         toast.success(deleteDataMessage);
       },
       onError: (error) => {
@@ -53,7 +54,7 @@ export const useDataTable = ({
   };
 
   const deleteDataHandler = ({ slug, token }) => {
-    if (window.confirm("Are you sure you want to delete this record?")) {
+    if (window.confirm("Do you want to delete this record?")) {
       mutateDeletePost({ slug, token });
     }
   };
