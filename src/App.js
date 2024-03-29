@@ -14,12 +14,14 @@ import EditPost from "./pages/admin/screens/posts/EditPost.jsx";
 import Categories from "./pages/admin/screens/categories/Categories.jsx";
 import EditCategories from "./pages/admin/screens/categories/EditCategories.jsx";
 import Users from "./pages/admin/screens/users/Users.jsx";
+import TrailPage from "./pages/trail/TrailPage.jsx";
 
 function App() {
   return (
     <div className="App font-opensans">
       <Routes>
         <Route index path="/" element={<HomePage />} />
+        <Route path="/trail" element={<TrailPage />} />
         <Route path="/trail/:slug" element={<ArticleDetailPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />

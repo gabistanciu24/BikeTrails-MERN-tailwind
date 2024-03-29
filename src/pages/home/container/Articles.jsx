@@ -6,10 +6,11 @@ import { getAllPosts } from "../../../services/index/posts";
 import toast from "react-hot-toast";
 import ArticleCardSkeleton from "../../../components/ArticleCardSkeleton";
 import ErrorMessage from "../../../components/ErrorMessage";
+import { Link } from "react-router-dom";
 
 const Articles = () => {
   const { data, isLoading, isError } = useQuery({
-    queryFn: () => getAllPosts(),
+    queryFn: () => getAllPosts("", 1, 6),
     queryKey: ["posts"],
     onError: (error) => {
       toast.error(error.message);
@@ -28,7 +29,7 @@ const Articles = () => {
             />
           ))
         ) : isError ? (
-          <ErrorMessage message="Couldn't fetch the posts data." />
+          <ErrorMessage message="Couldn't fetch the trails data." />
         ) : (
           data?.data.map((post) => (
             <ArticleCard
@@ -39,10 +40,13 @@ const Articles = () => {
           ))
         )}
       </div>
-      <button className="mx-auto flex items-center gap-x-2 font-bold text-primary border-2 border-primary px-6 py-3 rounded-lg">
+      <Link
+        to="/trail"
+        className="mx-auto flex items-center gap-x-2 font-bold text-primary border-2 border-primary px-6 py-3 rounded-lg"
+      >
         <span>Mai multe trasee</span>
         <FaArrowRight className="w-3" />
-      </button>
+      </Link>
       {/* Just for testing stuff */}
     </section>
   );
